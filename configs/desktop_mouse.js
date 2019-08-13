@@ -1,5 +1,5 @@
 {
-  "axisPolling": "20",
+  "axisPolling": "80",
   "deadzone": 0.05,
   "default": true,
   "enabled": true,

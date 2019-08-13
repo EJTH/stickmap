@@ -90,6 +90,8 @@ function InputConfigurator(){
       </select><button class="ok">Ok</button>`,
       init: function(dom, cfg, done){
         if(cfg.click) dom.find('select').val(cfg.click);
+        var polling = cfg.polling || 0;
+        dom.find('.polling').val(polling);
         dom.find('.ok').on('click', function(){
           done({
             click: dom.find('select').val()
@@ -124,7 +126,9 @@ function InputConfigurator(){
           mode:  "javascript"
         });
         var polling = cfg.polling || 0;
-        dom.find('.polling').val(polling)
+
+        dom.find('.polling').val(polling);
+
         dom.find('.ok').on('click', function(){
           done({
             callback: scriptEditor.getValue(),

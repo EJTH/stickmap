@@ -2,7 +2,7 @@
   "app": "GTA5.exe",
   "axisPolling": 10,
   "deadzone": 0.05,
-  "destroy": "function(robot){\r\n    clearInterval(this.wiggleTimer);\r\n  }",
+  "destroy": "function(robot){\n    clearInterval(this.wiggleTimer);\n  }",
   "enabled": false,
   "id": "gta_fly",
   "init": "function(robot){\n    var dir = 1;\n    var cfg = this;\n    this.wiggleOn = false;\n    this.wiggleTimer = setInterval(function(){\n      if(cfg.wiggleOn){\n        robot.moveMouseRelative(dir,dir);\n        dir *= -1;\n      }\n    }, 100);\n  }",
@@ -13,7 +13,7 @@
     },
     "0axis0-": {
       "key": "numpad_8",
-      "pwm": 50
+      "pwm": 51
     },
     "0axis1+": {
       "key": "numpad_6",
@@ -25,6 +25,7 @@
     },
     "0axis2": {
       "mouseX": true,
+      "polling": 255,
       "scale": 25
     },
     "0axis3": {
@@ -48,7 +49,8 @@
       "pwm": 100
     },
     "0btn0": {
-      "key": "space"
+      "key": "space",
+      "pwm": 0
     },
     "0btn1": {
       "key": "e"
@@ -57,7 +59,7 @@
       "enabler": true
     },
     "0btn2": {
-      "callback": "function(robot,value){\r\n      if(value) this.wiggleOn = !this.wiggleOn;\r\n    }"
+      "callback": "function(robot,value){\n      if(value) this.wiggleOn = !this.wiggleOn;\n    }"
     }
   },
   "title": "GTA Flying"
