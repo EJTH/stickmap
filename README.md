@@ -12,15 +12,15 @@ There is plenty of programs out there that can map Joystick movements to keyboar
 - Crossplatform! (Windows, OSX, Linux).
 
 ## Installing
-  Either download the appropriate precompiled [builds](builds/) for your OS, or build it yourself.
+Either download the appropriate precompiled [builds](builds/) for your OS, or build it yourself.
 
 ## Building
-  To build this project run the following commands in a shell (requires git+node&npm)
-     ```
-     git clone https://github.com/EJTH/stickmap # Checkout repo
-     npm install # Install dependencies
-     npm run build # Build project
-     ```
+To build this project run the following commands in a shell (requires git+node&npm)
+```
+git clone https://github.com/EJTH/stickmap # Checkout repo
+npm install # Install dependencies
+npm run build # Build project
+```
 
 ## Help & Documentation
-  All this might seem a little complicated at first glance, but its really not. Checkout the [documentation](docs/) if you have trouble.
+All this might seem a little complicated at first glance, but its really not. Checkout the [documentation](docs/) if you have trouble.
