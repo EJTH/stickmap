@@ -16,9 +16,11 @@ There is plenty of programs out there that can map Joystick movements to keyboar
 
 ## Building
   To build this project run the following commands in a shell (requires git+node&npm)
+     ```
      git clone https://github.com/EJTH/stickmap # Checkout repo
      npm install # Install dependencies
      npm run build # Build project
+     ```
 
 ## Help & Documentation
   All this might seem a little complicated at first glance, but its really not. Checkout the [documentation](docs/) if you have trouble.
