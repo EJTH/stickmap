@@ -85,7 +85,8 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
-  //win.webContents.openDevTools()
+  console.log(process.argv)
+  if(process.argv.indexOf('--dev') > -1) win.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

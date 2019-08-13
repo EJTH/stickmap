@@ -1,6 +1,6 @@
 {
   "name": "stickmap",
-  "productName" : "StickMap",
+  "productName": "StickMap",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,14 +11,14 @@
     "robotjs": "https://git@github.com:EJTH/robotjs.git"
   },
   "devDependencies": {
-    "electron": "^3.0.1",
+    "electron": "^3.1.13",
     "electron-packager": "^14.0.4",
-    "electron-rebuild": "^1.8.2",
-    "scss": "^0.2.4"
+    "electron-rebuild": "^1.8.5",
+    "sass": "^1.22.9"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "sass src/ui/ui-style.scss src/ui/ui-style.css",
+    "build": "node node_modules/sass/sass.js src/ui/ui-style.scss src/ui/ui-style.css && \"node_modules/.bin/electron-rebuild\" && node node_modules/electron-packager/bin/electron-packager.js . --asar --out=build/",
     "start": "electron ."
   },
   "files": [
