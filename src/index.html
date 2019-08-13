@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./src/ui/ui-style.css">
+    <style>
+      .button-list button .assignment-desc {
+        font-size:9px;
+        line-height: 9px;
+        overflow:hidden;
+        display:inline-block;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="./lib/jquery.js"></script>
+    <script src="./src/ui/ui-script.js"></script>
+    <script>
+      $(function(){
+        var devices = [];
+        var profiles = [];
+        var profileMap = {};
+
+        var $deviceTmpl = $('.device').clone();
+
+        $('.device').remove();
+
+        function buildProfileSelect(){
+          var $profiles = [];
+          profiles.forEach(function(profile){
+            var $opt = $('<option>', { text: profile.title || profile.id, value: profile.id });
+            profileMap[profile.id] = profile;
+            $profiles.push($opt);
+          });
+          $('#profileSelect').empty();
+          $('#profileSelect').append($profiles);
+        }
+
+        function setActiveProfile(id){
+          resetControllers();
+          var profile = profileMap[id];
+          var $profile = $('#profileSettings');
+          for(var k in profile){
+            var value = profile[k];
+            $input = $profile.find(`[name="${k}"]`);
+            if($input.attr('type') == 'checkbox'){
+              $input.prop('checked', value)
+            } else {
+              $input.val(value);
+            }
+            $input.trigger('input');
+          }
+
+          var labelReg = /([0-9]{0,1})(axis|btn)([0-9]+)([+\-]{0,1})/;
+          var AXIS_INFO = {
+            DEVICE: 1,
+            TYPE: 2,
+            ID: 3,
+            SIGN: 4
+          };
+
+          for(var k in profile.inputs){
+            var axisInfo = k.match(labelReg);
+            var val = profile.inputs[k];
+            var sign = axisInfo[AXIS_INFO.SIGN];
+            var $axis = $(`#${axisInfo[AXIS_INFO.TYPE]}_${axisInfo[AXIS_INFO.DEVICE]}_${axisInfo[AXIS_INFO.ID]}`);
+            if(axisInfo[AXIS_INFO.TYPE] == "axis"){
+              var $axisBtn = $axis.find(sign == "+" ? '.positive' : sign == "-" ? '.negative' : '.absolute');
+              console.log($axis, $axisBtn, val);
+              $axisBtn.find('.assignment-desc').text('('+getAxisDesc(val)+')');
+            } else {
+              var $btn = $(`#${axisInfo[AXIS_INFO.TYPE]}_${axisInfo[AXIS_INFO.DEVICE]}_${axisInfo[AXIS_INFO.ID]}`);
+              $btn.find('.assignment-desc').text(getAxisDesc(val));
+            }
+          }
+        }
+
+
+        function getAxisTask(axisObj){
+          if(axisObj.key) return 'key';
+        }
+
+        function getAxisDesc(axisObj){
+          if(axisObj.key) return axisObj.key.length == 1 ? axisObj.key.toUpperCase() : axisObj.key;
+          if(axisObj.mouseX) return 'Mouse X';
+          if(axisObj.mouseY) return 'Mouse Y';
+          if(axisObj.callback) return 'Script';
+          if(axisObj.click) return `'${axisObj.click}' click`;
+          if(axisObj.enabler) return 'Toggle enable';
+        }
+
+        function setProfiles(p){
+          profiles = p;
+          profileMap = {};
+          profiles.forEach(function(profile){
+            profileMap[profile.id] = profile;
+          });
+          buildProfileSelect();
+        }
+
+        function resetControllers(){
+          $('#controllers').empty();
+          devices.forEach(createController);
+        }
+
+        function createController(device, deviceIndex){
+          var $device = $deviceTmpl.clone();
+          $device.find('.controller-name').text(device.description);
+          var $axis = $device.find('.axis');
+          $axis.remove();
+          device.axisStates = device.axisStates.map(function(a,i){
+            var $a = $axis.clone();
+            $a.attr('id',`axis_${deviceIndex}_${i}`);
+            $a.find('.progress').text(`Axis\u00a0#${i}`);
+            $device.find('.axis-list').append($a);
+            return $a.find('.progress')[0];
+          });
+
+          device.buttonStates = device.buttonStates.map(function(b,i){
+            var $b = $('<button><span class="button-num"></span><span class="assignment-desc">&nbsp;<br/></span>');
+            $b.attr('id',`btn_${deviceIndex}_${i}`);
+            $b.find('.button-num').text(i);
+            $device.find('.button-list').append($b);
+            return $b[0];
+          });
+
+          $('#controllers').append($device);
+        }
+
+        var ipcRenderer = require('electron').ipcRenderer;
+
+        ipcRenderer.on('devicesInfo', (event, message) => {
+          devices = message;
+          devices.forEach(createController);
+        });
+
+        ipcRenderer.on('deviceStates', (event, message) => {
+          devices.forEach(function(dev, id){
+            dev.axisStates.forEach(function($axis, i){
+              var val = message.axisStates[id][i];
+              $axis.style.width = (((val + 1) / 2) * 100) + '%';
+            });
+
+            dev.buttonStates.forEach(function($btn, i){
+              $btn.classList.toggle('danger', !!message.buttonStates[id][i]);
+            });
+          });
+        });
+
+        ipcRenderer.on('profiles', (event, message) => {
+          console.log(message);
+          setProfiles(message);
+          ipcRenderer.send('getActiveProfile');
+        });
+
+        ipcRenderer.on('activeProfile', (event, message) => {
+          console.log(message);
+          setActiveProfile(message);
+        });
+
+        setInterval(function(){
+          ipcRenderer.send('getDeviceStates');
+        }, 100);
+        ipcRenderer.send('getProfiles');
+
+        $('#profileSelect').on('change', function(){
+          setActiveProfile(this.value);
+        })
+
+        $('body').on('input', 'input[type="range"]', function(){
+          $(this).next().text(this.value);
+        });
+      });
+    </script>
+    <title>StickMap</title>
+  </head>
+  <body>
+    <div class="collapsable">
+      <h2 class="activator">Profiles</h2>
+      <div class="content">
+        <select id="profileSelect"></select><div class="fuse" style="display:inline-block"> <button>Save</button><button>Delete</button><button>Refresh</button></div>
+      </div>
+    </div>
+    <div class="collapsable">
+      <h2 class="activator">Profile Settings</h2>
+      <div class="content" id="profileSettings">
+        <label>Profile ID</label>
+        <input type="text" name="id" />
+
+        <label>App (Executable name)</label>
+        <input type="text" name="app" />
+
+        <label>AxisPolling</label>
+        <input type="range" name="axisPolling" min="10" max="250" step="10" /><span></span>
+
+        <label>Deadzone</label>
+        <input type="range" name="deadzone" min="0" max="0.5" step="0.01" /><span></span>
+
+        <label><input type="checkbox" name="default" value="1" /> Default Profile</label>
+        <label><input type="checkbox" name="enabled" value="1" /> Profile Enabled</label>
+      </div>
+    </div>
+    <div class="collapsable collapsed">
+      <h2 class="activator">Scripts</h2>
+      <div class="content" id="scripts">
+        <div class="script">
+          <label>Profile.init</label>
+          <textarea class="script_editor"></textarea>
+        </div>
+      </div>
+    </div>
+    <div id="controllers">
+      <div class="collapsable device">
+        <h2 class="activator controller-name">Logitech 3D PRO</h2>
+        <div class="content">
+          <h3>Axis</h3>
+          <div class="axis-list">
+            <div class="collapsable axis panel-bg">
+              <div class="progress-bar activator"><span class="progress primary" style="width:50%">Axis #1</span></div>
+              <div class="content no-bg axis-config">
+                <div class="fuse axis-buttons">
+                  <button class="positive">Axis- <span class="assignment-desc"></span></button>
+                  <button class="absolute">Axis <span class="assignment-desc"></span></button>
+                  <button class="negative">Axis+ <span class="assignment-desc"></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3>Buttons</h3>
+          <div class="button-list">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay">
+      <div class="modal">
+
+      </div>
+    </div>
+  </body>
+</html>

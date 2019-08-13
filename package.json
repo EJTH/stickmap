@@ -1,0 +1,29 @@
+{
+  "name": "stickmap",
+  "productName" : "StickMap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "active-win": "^3.0.0",
+    "ffi": "github:node-ffi/node-ffi#169773d",
+    "gamepad": "^1.6.0",
+    "robotjs": "https://git@github.com:EJTH/robotjs.git"
+  },
+  "devDependencies": {
+    "electron": "^3.0.1",
+    "electron-packager": "^14.0.4",
+    "electron-rebuild": "^1.8.2",
+    "scss": "^0.2.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "sass src/ui/ui-style.scss src/ui/ui-style.css",
+    "start": "electron ."
+  },
+  "files": [
+    "lib/"
+  ],
+  "author": "",
+  "license": "ISC"
+}

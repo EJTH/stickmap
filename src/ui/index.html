@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="ui-style.css">
+    <style>
+      .button-list button .assignment-desc {
+        font-size:9px;
+        line-height: 9px;
+        overflow:hidden;
+        display:inline-block;
+      }
+      .CodeMirror {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        width: 100%;
+        height: 200px;
+      }
+    </style>
+
+    <script src="../../lib/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="../../lib/codemirror/lib/codemirror.css">
+    <script src="../../lib/codemirror/mode/javascript/javascript.js"></script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="../../lib/jquery.js"></script>
+    <script src="InputConfigurator.js"></script>
+    <script src="ui-script.js"></script>
+
+    <title>StickMap</title>
+  </head>
+  <body>
+    <div class="collapsable">
+      <h2 class="activator">Profiles</h2>
+      <div class="content">
+        <select id="profileSelect"></select>
+        <div class="fuse" style="display:inline-block">
+          <button class="save">Save</button>
+          <button class="new-profile">New</button>
+          <button class="delete-profile">Delete</button>
+          <button class="refresh-profiles">Refresh</button>
+        </div>
+      </div>
+    </div>
+    <div class="collapsable">
+      <h2 class="activator">Profile Settings</h2>
+      <div class="content" id="profileSettings">
+        <label>Profile ID</label>
+        <input type="text" name="id" />
+
+        <label>Profile Title</label>
+        <input type="text" name="title" />
+
+        <label>App (Executable name)</label>
+        <input type="text" name="app" />
+
+        <label>AxisPolling</label>
+        <input type="range" name="axisPolling" min="10" max="250" step="10" /><span></span>
+
+        <label>Deadzone</label>
+        <input type="range" name="deadzone" min="0" max="0.5" step="0.01" /><span></span>
+
+        <label><input type="checkbox" name="default" value="1" /> Default Profile</label>
+        <label><input type="checkbox" name="enabled" value="1" /> Profile Enabled</label>
+      </div>
+    </div>
+
+    <div class="collapsable collapsed">
+      <h2 class="activator" id="scriptsToggle">Scripts</h2>
+      <div class="content" id="scripts">
+        <div class="script">
+          <select id="scriptsList"></select>
+          <div id="scriptEditor"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="controllers">
+      <div class="collapsable device">
+        <h2 class="activator controller-name">Logitech 3D PRO</h2>
+        <div class="content">
+          <h3>Axis</h3>
+          <div class="axis-list">
+            <div class="collapsable axis panel-bg">
+              <div class="progress-bar activator"><span class="progress primary" style="width:50%">Axis #1</span></div>
+              <div class="content no-bg axis-config">
+                <div class="fuse axis-buttons">
+                  <button class="negative">Axis- <span class="assignment-desc"></span></button>
+                  <button class="absolute">Axis <span class="assignment-desc"></span></button>
+                  <button class="positive">Axis+ <span class="assignment-desc"></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3>Buttons</h3>
+          <div class="button-list">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsable collapsed">
+      <h2 class="activator">Log</h2>
+      <div class="content">
+        <div id="log"></div>
+      </div>
+    </div>
+    <div class="overlay">
+      <div class="modal">
+
+      </div>
+    </div>
+  </body>
+</html>
