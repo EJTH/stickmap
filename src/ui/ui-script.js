@@ -305,7 +305,7 @@ function initUI(){
         currentProfile[this.name] = parseInt(this.value);
       break;
       case 'range':
-        currentProfile[this.name] = parsefloat(this.value);
+        currentProfile[this.name] = parseFloat(this.value);
       break;
       default:
         currentProfile[this.name] = this.value;
