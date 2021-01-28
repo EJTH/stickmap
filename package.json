@@ -11,7 +11,7 @@
     "robotjs": "https://git@github.com:EJTH/robotjs.git"
   },
   "devDependencies": {
-    "electron": "^3.1.13",
+    "electron": "^9.4.0",
     "electron-packager": "^14.0.4",
     "electron-rebuild": "^1.8.5",
     "sass": "^1.22.9"
